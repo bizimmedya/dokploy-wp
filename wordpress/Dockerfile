@@ -11,6 +11,15 @@ RUN apt-get update && apt-get install -y \
     libfcgi-bin \
     && rm -rf /var/lib/apt/lists/*
 
+# --- ionCube ---
+RUN cd /tmp \
+    && wget https://downloads.ioncube.com/loader_downloads/ioncube_loaders_lin_x86-64.tar.gz \
+    && tar -xvzf ioncube_loaders_lin_x86-64.tar.gz \
+    && cp ioncube/ioncube_loader_lin_8.3.so $(php -r "echo ini_get('extension_dir');") \
+    && echo "zend_extension=ioncube_loader_lin_8.3.so" > /usr/local/etc/php/conf.d/00-ioncube.ini \
+    && rm -rf /tmp/ioncube*
+# --- ionCube Kurulumu Bitiş ---
+
 # Configure and install PHP extensions
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install -j$(nproc) gd zip opcache
